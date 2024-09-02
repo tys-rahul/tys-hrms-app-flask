@@ -37,6 +37,7 @@ def get_all_users():
 
 @admin_blueprint.route('/delete/user/<int:user_id>', methods=['DELETE'])
 @jwt_required()
+# @permission_required('Admin')
 def delete_user(user_id):
     user = User.query.get(user_id)
     if not user:

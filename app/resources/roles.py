@@ -1,13 +1,14 @@
 from flask import Blueprint, request, jsonify
 from app.extensions import db
-from app.models.role import Role, Permission, RolePermissions
+from app.models.role import Role, Permission, RolePermissions, UserRoles
+from app.models.user import User
 from app.utils.decorators import permission_required
+from flask_jwt_extended import jwt_required
 
 roles_blueprint = Blueprint('roles', __name__)
 
-@roles_blueprint.route('/roles', methods=['POST'])
-# @jwt_required()
-# @permission_required('view_admin_dashboard')
+@roles_blueprint.route('/add/user/role', methods=['POST'])
+@jwt_required()
 def create_role():
     data = request.get_json()
     role_name = data.get('name')
@@ -21,7 +22,8 @@ def create_role():
 
     return jsonify({"response": "Role created successfully"}), 201
 
-@roles_blueprint.route('/permissions', methods=['POST'])
+@roles_blueprint.route('/add/user/permission', methods=['POST'])
+@jwt_required()
 def create_permission():
     data = request.get_json()
     permission_name = data.get('name')
@@ -35,7 +37,8 @@ def create_permission():
 
     return jsonify({"response": "Permission created successfully"}), 201
 
-@roles_blueprint.route('/roles/<int:role_id>/permissions', methods=['POST'])
+@roles_blueprint.route('/assign/user/permission/<int:role_id>', methods=['POST'])
+@jwt_required()
 def assign_permissions_to_role(role_id):
     data = request.get_json()
     permission_ids = data.get('permission_ids')
@@ -51,3 +54,69 @@ def assign_permissions_to_role(role_id):
 
     db.session.commit()
     return jsonify({"response": "Permissions assigned successfully"}), 200
+
+@roles_blueprint.route('/assign/user/role', methods=['POST'])
+def add_user_role():
+    data = request.get_json()
+    
+    user_id = data.get('user_id')
+    role_id = data.get('role_id')
+
+    if not user_id or not role_id:
+        return jsonify({'error': 'User ID and Role ID are required'}), 400
+
+    user = User.query.get(user_id)
+    role = Role.query.get(role_id)
+
+    if not user or not role:
+        return jsonify({'error': 'User or Role not found'}), 404
+
+    # Check if the role is already assigned to the user
+    existing_user_role = UserRoles.query.filter_by(user_id=user_id, role_id=role_id).first()
+    if existing_user_role:
+        return jsonify({'message': 'Role already assigned to the user'}), 400
+
+    # Assign the role to the user
+    user_role = UserRoles(user_id=user_id, role_id=role_id)
+    db.session.add(user_role)
+    db.session.commit()
+
+    return jsonify({'message': 'Role assigned successfully'}), 201
+
+@roles_blueprint.route('/get/assigned/user-roles', methods=['GET'])
+def get_user_roles():
+    user_roles = UserRoles.query.all()
+    return jsonify([ {"user_id": user_role.user_id, "role_id": user_role.role_id} for user_role in user_roles]), 200
+
+@roles_blueprint.route('/get/assigned/user-role/<int:user_id>', methods=['GET'])
+def get_user_roles_by_id(user_id):
+    user_roles = UserRoles.query.filter_by(user_id=user_id).all()
+
+    if not user_roles:
+        return jsonify({'error': 'No roles found for this user'}), 404
+
+    roles = []
+    for user_role in user_roles:
+        role = Role.query.get(user_role.role_id)
+        roles.append({'role_id': role.id, 'role_name': role.name})
+
+    return jsonify({'user_id': user_id, 'roles': roles}), 200
+
+
+@roles_blueprint.route('/get/user/roles-list', methods=['GET'])
+@jwt_required()
+def get_all_roles():
+    roles = Role.query.all()
+    return jsonify([{"id": role.id, 'name': role.name} for role in roles]), 200
+
+@roles_blueprint.route('/get/user/permissions', methods=['GET'])
+@jwt_required()
+def get_all_permissions():
+    roles = Permission.query.all()
+    return jsonify([{"id": role.id, 'name': role.name} for role in roles]), 200
+
+@roles_blueprint.route('/get/user/assigned-roles', methods=['GET'])
+@jwt_required()
+def get_all_assigned_roles():
+    rolePermissions = RolePermissions.query.all()
+    return jsonify([{"role_id": rolePrm.role_id, 'permission_id': rolePrm.permission_id} for rolePrm in rolePermissions]), 200
