@@ -1,0 +1,248 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNTM2OTI4MSwianRpIjoiZDA2NTcxZWQtODQwMS00MjAxLWEwOTktODM4OGFhNDhjMmFhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InJhaHVsQGdtYWlsLmNvbSIsIm5iZiI6MTcyNTM2OTI4MSwiY3NyZiI6ImRjNDlkNTgzLTgyNDctNGFjYS05NGNhLTcwOWI1ZDg3ZmFjYiIsImV4cCI6MTcyNTM3MDE4MX0.7zx4n8QZpjSapQGzSuqzuaNo98q38ibN6tCuWezm9iU
+
+
+
+// User Management
+
+// Login using below api and copy accss_token from response and pass it to above @token variable to pass dynamic token to all api.
+###
+POST  http://127.0.0.1:5000/auth/login
+Content-Type: application/json
+
+{
+	"email": "rahul@gmail.com",
+	"password": "123456"
+}
+
+
+###
+GET  http://localhost:5134/assign/get
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/admin/get/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/users/master-data
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+// Professionals
+
+###
+POST  http://127.0.0.1:5000/auth/add/user/professional-details
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"designation": "Web Dev",
+	"prev_experience": "12",
+	"experience": "24",
+	"salary": "10000",
+	"skills": "html,css,js",
+	"cv_intro": "This is Demo Intro",
+	"joining_date": "12-08-2024",
+	"permanent_confirm_date": "05-07-2023",
+	"termination_date": "",
+	"termination_reason": "",
+	"user_id": "1"
+}
+
+###
+PUT  http://127.0.0.1:5000/auth/update/user/professional-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"designation": "Web Dev",
+	"prev_experience": "12",
+	"experience": "24",
+	"salary": "10000",
+	"skills": "html,css,js",
+	"cv_intro": "This is Demo Intro",
+	"joining_date": "12-08-2024",
+	"permanent_confirm_date": "05-07-2023",
+	"termination_date": "",
+	"termination_reason": "",
+	"user_id": "1"
+}
+
+###
+GET  http://127.0.0.1:5000/auth/get/all-users/professional/list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/user/professional-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE  http://127.0.0.1:5000/auth/professionals/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+// Personals
+
+###
+POST  http://127.0.0.1:5000/auth/add/user/personal-details
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"src": "asdfsdfsd",
+	"gender": "Male",
+	"dob": "2008-05-15",
+	"bio": "Demo Bio",
+	"address": "Malad station",
+	"address2": "demo",
+	"state": "goa",
+	"city": "mumbai",
+	"zipcode": "400099",
+	"country": "india",
+	"address_type": "permanent",
+	"user_id": "1"
+}
+
+###
+PUT  http://127.0.0.1:5000/auth/update/user/personal-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"src": "asdfsdfsd",
+	"gender": "Male",
+	"dob": "2008-05-15",
+	"bio": "Demo Bio",
+	"address": "Malad station",
+	"address2": "demo",
+	"state": "goa",
+	"city": "mumbai",
+	"zipcode": "400099",
+	"country": "india",
+	"address_type": "permanent",
+	"user_id": "1"
+}
+
+###
+GET  http://127.0.0.1:5000/auth/get/all-users/personal/list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/user/personal-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE  http://127.0.0.1:5000/auth/delete/user/personal-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+
+// Educations
+
+###
+POST  http://127.0.0.1:5000/auth/add/user/education-details
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"university_name": "Mumbai",
+	"course_name": "SSC",
+	"start_date": "10-06-2012",
+	"end_date": "10-06-2013",
+	"grade": "50",
+	"user_id": "1"
+	
+}
+###
+PUT  http://127.0.0.1:5000/auth/update/user/education-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"university_name": "Mumbai",
+	"course_name": "SSC",
+	"start_date": "10-06-2012",
+	"end_date": "10-06-2013",
+	"grade": "50",
+	"user_id": "1"
+	
+}
+
+###
+GET  http://127.0.0.1:5000/auth/get/all-users/education/list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/user/education-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE  http://127.0.0.1:5000/auth/delete/user/personal-details/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+// Banks
+
+###
+POST  http://127.0.0.1:5000/auth/add/user/bank-details
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"bank_name": "Hdfc",
+	"account_no": "9854125478",
+	"ifsc_code": "45621456874",
+	"branch_name": "Vashi",
+	"bank_address": "Vashi Station",
+	"pan_card": "1236547858",
+	"aadhar_card": "985415785",
+	"aadhar_img": "sadfsdfsd",
+	"pan_img": "asdsdfsdf",
+	"bank_passbook_img": "asdsdasd"
+	
+}
+
+###
+PUT  http://127.0.0.1:5000/auth/update/user/bank-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"bank_name": "Hdfc",
+	"account_no": "9854125478",
+	"ifsc_code": "45621456874",
+	"branch_name": "Vashi",
+	"bank_address": "Vashi Station",
+	"pan_card": "1236547858",
+	"aadhar_card": "985415785",
+	"aadhar_img": "sadfsdfsd",
+	"pan_img": "asdsdfsdf",
+	"bank_passbook_img": "asdsdasd"
+	
+}
+
+###
+GET  http://127.0.0.1:5000/auth/get/all-users/bank/list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/user/bank-details/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE  http://127.0.0.1:5000/auth/delete/user/bank-details/2
+Authorization: Bearer {{token}}
+Content-Type: application/json

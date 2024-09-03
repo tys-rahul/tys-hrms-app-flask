@@ -2,9 +2,23 @@ from flask import Blueprint
 from app.resources.auth import auth_blueprint
 from app.resources.roles import roles_blueprint
 from app.resources.admin import admin_blueprint
+from app.resources.professional import professional_blueprint
+from app.resources.personal import personal_blueprint
+from app.resources.education import education_blueprint
+from app.resources.bank import bank_blueprint
 
 main_blueprint = Blueprint('main', __name__)
-main_blueprint.register_blueprint(auth_blueprint, url_prefix='/auth')
-main_blueprint.register_blueprint(roles_blueprint, url_prefix='/auth')
+auth_blueprints = [
+    auth_blueprint,
+    roles_blueprint,
+    professional_blueprint,
+    personal_blueprint,
+    education_blueprint,
+    bank_blueprint,
+]
+
+for bp in auth_blueprints:
+    main_blueprint.register_blueprint(bp, url_prefix='/auth')
+
 main_blueprint.register_blueprint(admin_blueprint, url_prefix='/admin')
 

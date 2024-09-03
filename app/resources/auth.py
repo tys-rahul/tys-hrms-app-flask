@@ -140,3 +140,54 @@ def update_password():
     db.session.commit()
 
     return jsonify({"response": "Password updated successfully"}), 200
+
+@auth_blueprint.route('/get/users/master-data', methods=['GET'])
+@jwt_required()
+def get_all_users():
+    users = User.query.all()
+    users_data = []
+    
+    for user in users:
+        user_info = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "educations": {
+                "university_name": user.education.university_name if user.education else None,
+                "course_name": user.education.course_name if user.education else None,
+                "start_date": user.education.start_date if user.education else None,
+                "end_date": user.education.end_date if user.education else None,
+                "grade": user.education.grade if user.education else None,
+            },
+            "personal": {
+                "gender": user.personal.gender if user.personal else None,
+                "dob": user.personal.dob if user.personal else None,
+                "bio": user.personal.bio if user.personal else None,
+                "address": user.personal.address if user.personal else None,
+                "city": user.personal.city if user.personal else None,
+                "state": user.personal.state if user.personal else None,
+                "country": user.personal.country if user.personal else None,
+                "zipcode": user.personal.zipcode if user.personal else None,
+            },
+            "professional": {
+                "designation": user.professional.designation if user.professional else None,
+                "prev_experience": user.professional.prev_experience if user.professional else None,
+                "experience": user.professional.experience if user.professional else None,
+                "salary": user.professional.salary if user.professional else None,
+                "skills": user.professional.skills if user.professional else None,
+                "cv_intro": user.professional.cv_intro if user.professional else None,
+                "joining_date": user.professional.joining_date if user.professional else None,
+                "permanent_confirm_date": user.professional.permanent_confirm_date if user.professional else None,
+                "termination_date": user.professional.termination_date if user.professional else None,
+                "termination_reason": user.professional.termination_reason if user.professional else None,
+            },
+            "bank": {
+                "account_number": user.bank.account_number if user.bank else None,
+                "ifsc_code": user.bank.ifsc_code if user.bank else None,
+                "bank_name": user.bank.bank_name if user.bank else None,
+                "branch_name": user.bank.branch_name if user.bank else None,
+            }
+        }
+        users_data.append(user_info)
+    
+    return jsonify(users_data)

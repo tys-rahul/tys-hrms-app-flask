@@ -18,3 +18,11 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    # professionals = db.relationship('Professional', backref='user', lazy=True)
+    # personals = db.relationship('Personal', backref='user', lazy=True)
+    # educations = db.relationship('Education', backref='user', lazy=True)
+    # banks = db.relationship('Banks', backref='user', lazy=True)
+
+
+
