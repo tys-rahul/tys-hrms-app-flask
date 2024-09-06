@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNTM2OTI4MSwianRpIjoiZDA2NTcxZWQtODQwMS00MjAxLWEwOTktODM4OGFhNDhjMmFhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InJhaHVsQGdtYWlsLmNvbSIsIm5iZiI6MTcyNTM2OTI4MSwiY3NyZiI6ImRjNDlkNTgzLTgyNDctNGFjYS05NGNhLTcwOWI1ZDg3ZmFjYiIsImV4cCI6MTcyNTM3MDE4MX0.7zx4n8QZpjSapQGzSuqzuaNo98q38ibN6tCuWezm9iU
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNTYxMzk1NywianRpIjoiYWZmMzZmNGQtMjRiMi00NDE3LTlkMjItMDVjMWE5ZmFiZWExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InJhaHVsQGdtYWlsLmNvbSIsIm5iZiI6MTcyNTYxMzk1NywiY3NyZiI6IjdmNjllZjA1LTQyMmUtNDIzNy04NzdjLTE0YWFiZTQ2MDRhOCIsImV4cCI6MTcyNTYxNDg1N30.F6DenGUSJooXNsqi8ZO2spx7N5LmDMdUwm0D35pb9LY
 
 
 
@@ -14,11 +14,22 @@ Content-Type: application/json
 	"password": "123456"
 }
 
+###
+POST  http://127.0.0.1:5000/auth/register
+Content-Type: application/json
+
+{
+	"username": "Shivam",
+	"email": "shivam@gmail.com",
+	"contact_no": "9854120017",
+	"password": "123456"
+}
+
 
 ###
-GET  http://localhost:5134/assign/get
-Authorization: Bearer {{token}}
-Content-Type: application/json
+# GET  http://localhost:5134/assign/get
+# Authorization: Bearer {{token}}
+# Content-Type: application/json
 
 ###
 GET  http://127.0.0.1:5000/admin/get/users
@@ -48,7 +59,7 @@ Content-Type: application/json
 	"permanent_confirm_date": "05-07-2023",
 	"termination_date": "",
 	"termination_reason": "",
-	"user_id": "1"
+	"user_id": "2"
 }
 
 ###
@@ -67,7 +78,7 @@ Content-Type: application/json
 	"permanent_confirm_date": "05-07-2023",
 	"termination_date": "",
 	"termination_reason": "",
-	"user_id": "1"
+	"user_id": "2"
 }
 
 ###
@@ -105,7 +116,7 @@ Content-Type: application/json
 	"zipcode": "400099",
 	"country": "india",
 	"address_type": "permanent",
-	"user_id": "1"
+	"user_id": "2"
 }
 
 ###
@@ -125,7 +136,7 @@ Content-Type: application/json
 	"zipcode": "400099",
 	"country": "india",
 	"address_type": "permanent",
-	"user_id": "1"
+	"user_id": "2"
 }
 
 ###
@@ -158,7 +169,7 @@ Content-Type: application/json
 	"start_date": "10-06-2012",
 	"end_date": "10-06-2013",
 	"grade": "50",
-	"user_id": "1"
+	"user_id": "2"
 	
 }
 ###
@@ -172,7 +183,7 @@ Content-Type: application/json
 	"start_date": "10-06-2012",
 	"end_date": "10-06-2013",
 	"grade": "50",
-	"user_id": "1"
+	"user_id": "2"
 	
 }
 
@@ -209,12 +220,13 @@ Content-Type: application/json
 	"aadhar_card": "985415785",
 	"aadhar_img": "sadfsdfsd",
 	"pan_img": "asdsdfsdf",
-	"bank_passbook_img": "asdsdasd"
+	"bank_passbook_img": "asdsdasd",
+	"user_id": "3"
 	
 }
 
 ###
-PUT  http://127.0.0.1:5000/auth/update/user/bank-details/1
+PUT  http://127.0.0.1:5000/auth/update/user/bank-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -228,7 +240,8 @@ Content-Type: application/json
 	"aadhar_card": "985415785",
 	"aadhar_img": "sadfsdfsd",
 	"pan_img": "asdsdfsdf",
-	"bank_passbook_img": "asdsdasd"
+	"bank_passbook_img": "asdsdasd",
+	"user_id": "2"
 	
 }
 
@@ -244,5 +257,142 @@ Content-Type: application/json
 
 ###
 DELETE  http://127.0.0.1:5000/auth/delete/user/bank-details/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+
+// office location api's
+
+###
+POST  http://127.0.0.1:5000/auth/add/office/location
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"office_location": "Sanpada G-square ",
+	"latitude": "19.06",
+	"longitude": "73.00"
+	
+}
+
+###
+PUT  http://127.0.0.1:5000/auth/update/office/location/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"office_location": "Sanpada G-square ",
+	"latitude": "19.066",
+	"longitude": "73.00"
+	
+}
+
+###
+GET  http://127.0.0.1:5000/auth/get/all-office-location/list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/office/location/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE  http://127.0.0.1:5000/auth/delete/office/location/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+// family api's
+
+###
+POST  http://127.0.0.1:5000/auth/add/user/family-details
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"father_name": "Test f name",
+	"mother_name": "Test m name",
+	"personal_email": "tys@gmail.com",
+	"alternate_contact": "9985412012",
+	"family_address": "Vashi Station",
+	"user_id": "1"
+	
+}
+
+###
+PUT  http://127.0.0.1:5000/auth/update/user/family-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"father_name": "Test f name",
+	"mother_name": "Test m name",
+	"personal_email": "tys@gmail.com",
+	"alternate_contact": "9985412012",
+	"family_address": "Vashi Station",
+	"user_id": "1"
+	
+}
+
+###
+GET  http://127.0.0.1:5000/auth/get/all-users/family/list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/user/family-details/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE  http://127.0.0.1:5000/auth/delete/user/family-details/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+// project api's
+
+###
+POST  http://127.0.0.1:5000/auth/add/user/project-details
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"title": "Hrms app",
+	"description": "Test hrms app",
+	"start_date": "2022-05-15",
+	"end_date": "2022-09-15",
+	"user_id": "1"
+	
+}
+
+###
+PUT  http://127.0.0.1:5000/auth/update/user/project-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"title": "Hrms app",
+	"description": "Test hrms app",
+	"start_date": "2022-05-15",
+	"end_date": "2022-09-15",
+	"user_id": "1"
+	
+}
+
+###
+GET  http://127.0.0.1:5000/auth/get/all-users/project/list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/user/project-details/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE  http://127.0.0.1:5000/auth/delete/user/project-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json

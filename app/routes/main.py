@@ -6,6 +6,9 @@ from app.resources.professional import professional_blueprint
 from app.resources.personal import personal_blueprint
 from app.resources.education import education_blueprint
 from app.resources.bank import bank_blueprint
+from app.resources.family import family_blueprint
+from app.resources.office_location import OfficeLocation_blueprint
+from app.resources.project import project_blueprint
 
 main_blueprint = Blueprint('main', __name__)
 auth_blueprints = [
@@ -15,6 +18,9 @@ auth_blueprints = [
     personal_blueprint,
     education_blueprint,
     bank_blueprint,
+    family_blueprint,
+    OfficeLocation_blueprint,
+    project_blueprint
 ]
 
 for bp in auth_blueprints:

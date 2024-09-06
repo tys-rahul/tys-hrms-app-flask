@@ -59,6 +59,7 @@ def to_dict(self):
         "bank_passbook_img": self.bank_passbook_img,
         "label": self.label,
         "status": self.status,
+        "user_id": self.user_id,
     }
 
 Bank.to_dict = to_dict

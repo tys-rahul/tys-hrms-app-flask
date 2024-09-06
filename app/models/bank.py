@@ -14,6 +14,9 @@ class Bank(db.Model):
     bank_passbook_img = db.Column(db.String(255), nullable=True)
     label = db.Column(db.String(255), nullable=True, default='BK')
     status = db.Column(db.String(10), nullable=True, comment='0: Approved, 1: Pending, 2: Rejected')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    user = db.relationship('User', backref=db.backref('banks', lazy=True))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
