@@ -9,6 +9,7 @@ from app.resources.bank import bank_blueprint
 from app.resources.family import family_blueprint
 from app.resources.office_location import OfficeLocation_blueprint
 from app.resources.project import project_blueprint
+from app.resources.attendance import attendance_blueprint
 
 main_blueprint = Blueprint('main', __name__)
 auth_blueprints = [
@@ -20,7 +21,8 @@ auth_blueprints = [
     bank_blueprint,
     family_blueprint,
     OfficeLocation_blueprint,
-    project_blueprint
+    project_blueprint,
+    attendance_blueprint
 ]
 
 for bp in auth_blueprints:

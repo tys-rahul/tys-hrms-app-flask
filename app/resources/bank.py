@@ -9,13 +9,23 @@ bank_blueprint = Blueprint('bank_blueprint', __name__)
 @jwt_required()
 def get_banks():
     banks = Bank.query.all()
-    return jsonify([bank.to_dict() for bank in banks]), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [bank.to_dict() for bank in banks],
+                'message': "Data fetched successfully!"
+            }), 200
 
 @bank_blueprint.route('/get/user/bank-details/<int:id>', methods=['GET'])
 @jwt_required()
 def get_bank(id):
     bank = Bank.query.get_or_404(id)
-    return jsonify(bank.to_dict()), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [bank.to_dict()],
+                'message': "Data fetched successfully!"
+            }), 200
 
 @bank_blueprint.route('/add/user/bank-details', methods=['POST'])
 @jwt_required()
@@ -24,7 +34,12 @@ def create_bank():
     new_bank = Bank(**data)
     db.session.add(new_bank)
     db.session.commit()
-    return jsonify(new_bank.to_dict()), 201
+    return jsonify({
+                'success': True,
+                'status_code': 201,
+                'data': [new_bank.to_dict()],
+                'message': "Created"
+            }), 201
 
 @bank_blueprint.route('/update/user/bank-details/<int:id>', methods=['PUT'])
 @jwt_required()
@@ -34,7 +49,12 @@ def update_bank(id):
     for key, value in data.items():
         setattr(bank, key, value)
     db.session.commit()
-    return jsonify(bank.to_dict()), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [bank.to_dict()],
+                'message': "Updated"
+            }), 200
 
 @bank_blueprint.route('/delete/user/bank-details/<int:id>', methods=['DELETE'])
 @jwt_required()
@@ -42,7 +62,12 @@ def delete_bank(id):
     bank = Bank.query.get_or_404(id)
     db.session.delete(bank)
     db.session.commit()
-    return '', 204
+    return jsonify({
+                'success': True,
+                'status_code': 204,
+                'data': [],
+                'message': "Deleted"
+            }), 204
 
 def to_dict(self):
     return {

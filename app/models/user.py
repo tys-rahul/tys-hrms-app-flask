@@ -23,6 +23,8 @@ class User(db.Model):
     # personals = db.relationship('Personal', backref='user', lazy=True)
     # educations = db.relationship('Education', backref='user', lazy=True)
     # banks = db.relationship('Banks', backref='user', lazy=True)
+    # attendances = db.relationship('Attendance', back_populates='user', lazy='dynamic')
+    attendances = db.relationship('Attendance', backref='user', lazy=True)
 
 
 

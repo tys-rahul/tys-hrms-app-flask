@@ -11,14 +11,24 @@ project_blueprint = Blueprint('projects', __name__)
 def get_projects():
     projects = Project.query.all()
     project_list = [project.to_dict() for project in projects]
-    return jsonify(project_list), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [project_list],
+                'message': "Data fetched successfully!"
+            }), 200
 
 # Get Project by ID
 @project_blueprint.route('/get/user/project-details/<int:id>', methods=['GET'])
 @jwt_required()
 def get_project(id):
     project = Project.query.get_or_404(id)
-    return jsonify(project.to_dict()), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [project.to_dict()],
+                'message': "Data fetched successfully!"
+            }), 200
 
 # Create Project
 @project_blueprint.route('/add/user/project-details', methods=['POST'])
@@ -28,7 +38,12 @@ def create_project():
     new_project = Project(**data)
     db.session.add(new_project)
     db.session.commit()
-    return jsonify({'message': 'Project created successfully'}), 201
+    return jsonify({
+                'success': True,
+                'status_code': 201,
+                'data': [new_project.to_dict()],
+                'message': "Project created successfully!"
+            }), 201
 
 # Update Project
 @project_blueprint.route('/update/user/project-details/<int:id>', methods=['PUT'])
@@ -39,7 +54,12 @@ def update_project(id):
     for key, value in data.items():
         setattr(project, key, value)
     db.session.commit()
-    return jsonify(project.to_dict()), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [project.to_dict()],
+                'message': "Data updated successfully!"
+            }), 200
 
 # Delete Project
 @project_blueprint.route('/delete/user/project-details/<int:id>', methods=['DELETE'])
@@ -48,7 +68,12 @@ def delete_project(id):
     project = Project.query.get_or_404(id)
     db.session.delete(project)
     db.session.commit()
-    return jsonify({'message': 'Project deleted successfully'}), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [],
+                'message': "Project deleted  successfully!"
+            }), 200
 
 
 def to_dict(self):

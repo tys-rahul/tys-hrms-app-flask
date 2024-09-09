@@ -10,13 +10,23 @@ personal_blueprint = Blueprint('personal', __name__)
 @jwt_required()
 def get_personals():
     personals = Personal.query.all()
-    return jsonify([personal.to_dict() for personal in personals]), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [personal.to_dict() for personal in personals],
+                'message': "Data fetched successfully!"
+            }), 200
 
 @personal_blueprint.route('/get/user/personal-details/<int:id>', methods=['GET'])
 @jwt_required()
 def get_personal(id):
     personal = Personal.query.get_or_404(id)
-    return jsonify(personal.to_dict()), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [personal.to_dict()],
+                'message': "Data fetched successfully!"
+            }), 200
 
 @personal_blueprint.route('/add/user/personal-details', methods=['POST'])
 @jwt_required()
@@ -29,7 +39,12 @@ def create_personal():
     new_personal = Personal(**data)
     db.session.add(new_personal)
     db.session.commit()
-    return jsonify(new_personal.to_dict()), 201
+    return jsonify({
+                'success': True,
+                'status_code': 201,
+                'data': [new_personal.to_dict()],
+                'message': "Data created successfully!"
+            }), 201
 
 @personal_blueprint.route('/update/user/personal-details/<int:id>', methods=['PUT'])
 @jwt_required()
@@ -43,14 +58,24 @@ def update_personal(id):
     for key, value in data.items():
         setattr(personal, key, value)
     db.session.commit()
-    return jsonify(personal.to_dict()), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [personal.to_dict()],
+                'message': "Data updated successfully!"
+            }), 200
 @personal_blueprint.route('/delete/user/personal-details/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_personal(id):
     personal = Personal.query.get_or_404(id)
     db.session.delete(personal)
     db.session.commit()
-    return '', 204
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [],
+                'message': "Data deleted successfully!"
+            }), 200
 
 def to_dict(self):
     return {

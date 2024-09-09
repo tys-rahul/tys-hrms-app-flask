@@ -9,13 +9,23 @@ professional_blueprint = Blueprint('professional', __name__)
 @jwt_required()
 def get_professionals():
     professionals = Professional.query.all()
-    return jsonify([professional.to_dict() for professional in professionals]), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [professional.to_dict() for professional in professionals],
+                'message': "Data fetched successfully!"
+            }), 200
 
 @professional_blueprint.route('/get/user/professional-details/<int:id>', methods=['GET'])
 @jwt_required()
 def get_professional(id):
     professional = Professional.query.get_or_404(id)
-    return jsonify(professional.to_dict()), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [professional.to_dict()],
+                'message': "Data fetched successfully!"
+            }), 200
 
 @professional_blueprint.route('/add/user/professional-details', methods=['POST'])
 @jwt_required()
@@ -24,7 +34,12 @@ def create_professional():
     new_professional = Professional(**data)
     db.session.add(new_professional)
     db.session.commit()
-    return jsonify(new_professional.to_dict()), 201
+    return jsonify({
+                'success': True,
+                'status_code': 201,
+                'data': [new_professional.to_dict()],
+                'message': "Data created successfully!"
+            }), 201
 
 @professional_blueprint.route('/update/user/professional-details/<int:id>', methods=['PUT'])
 @jwt_required()
@@ -34,7 +49,12 @@ def update_professional(id):
     for key, value in data.items():
         setattr(professional, key, value)
     db.session.commit()
-    return jsonify(professional.to_dict()), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [professional.to_dict()],
+                'message': "Data updated successfully!"
+            }), 200
 
 @professional_blueprint.route('/delete/user/professional-details/<int:id>', methods=['DELETE'])
 @jwt_required()
@@ -42,7 +62,12 @@ def delete_professional(id):
     professional = Professional.query.get_or_404(id)
     db.session.delete(professional)
     db.session.commit()
-    return '', 204
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [],
+                'message': "Data deleted successfully!"
+            }), 200
 
 def to_dict(self):
     return {

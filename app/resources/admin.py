@@ -14,25 +14,50 @@ def update_user_status(user_id):
     status = data.get('status')
 
     if status not in [0, 1]:
-        return jsonify({"response": "Status must be either 0 or 1"}), 400
+        return jsonify({
+                'success': False,
+                'status_code': 400,
+                'data': [],
+                'message': "Status must be either 0 or 1"
+            }), 400
 
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"response": "User not found"}), 404
+        return jsonify({
+                'success': False,
+                'status_code': 404,
+                'data': [],
+                'message': "User not found"
+            }), 404
 
     user.status = status
     db.session.commit()
 
     if status == 0:
-        return jsonify({"response": "User activated successfully"}), 200
+        return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [],
+                'message': "User activated successfully!"
+            }), 200
     else:
-        return jsonify({"response": "User deactivated successfully"}), 200
+        return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [],
+                'message': "User deactivated successfully!"
+            }), 200
 
 @admin_blueprint.route('/get/users', methods=['GET'])
 @jwt_required()
 def get_all_users():
     users = User.query.all()
-    return jsonify([{"id": user.id, 'username': user.username, "email": user.email, "contact_no": user.contact_no, "status": user.status} for user in users]), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [{"id": user.id, 'username': user.username, "email": user.email, "contact_no": user.contact_no, "status": user.status} for user in users],
+                'message': "Data fetched successfully!"
+            }), 200
 
 
 @admin_blueprint.route('/delete/user/<int:user_id>', methods=['DELETE'])
@@ -41,8 +66,18 @@ def get_all_users():
 def delete_user(user_id):
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"response": ERROR_USER_NOT_FOUND}), 404
+        return jsonify({
+                'success': False,
+                'status_code': 404,
+                'data': [],
+                'message': ERROR_USER_NOT_FOUND
+            }), 404
 
     db.session.delete(user)
     db.session.commit()
-    return jsonify({"response": SUCCESS_USER_DELETED}), 200
+    return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': [],
+                'message': SUCCESS_USER_DELETED
+            }), 200

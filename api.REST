@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNTYxMzk1NywianRpIjoiYWZmMzZmNGQtMjRiMi00NDE3LTlkMjItMDVjMWE5ZmFiZWExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InJhaHVsQGdtYWlsLmNvbSIsIm5iZiI6MTcyNTYxMzk1NywiY3NyZiI6IjdmNjllZjA1LTQyMmUtNDIzNy04NzdjLTE0YWFiZTQ2MDRhOCIsImV4cCI6MTcyNTYxNDg1N30.F6DenGUSJooXNsqi8ZO2spx7N5LmDMdUwm0D35pb9LY
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNTg4MjgzMSwianRpIjoiNjRjMDJiODktZjhjMi00Nzc5LWJhZmYtOGNlYWJhZTU3ZDE1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjoyLCJlbWFpbCI6InJhaHVsQGdtYWlsLmNvbSJ9LCJuYmYiOjE3MjU4ODI4MzEsImNzcmYiOiI2ZGE4ODhhZi0xYjhiLTQyY2EtODEyMy1jZGE1YTc1ODBlZjYiLCJleHAiOjE3MjU5NjkyMzF9.GAuUpq2j6NEgrIwb74SPcaAPVh-_zz4IiiQqgtGMt5Y
 
 
 
@@ -20,8 +20,8 @@ Content-Type: application/json
 
 {
 	"username": "Shivam",
-	"email": "shivam@gmail.com",
-	"contact_no": "9854120017",
+	"email": "shivam",
+	"contact_no": "asdfsd",
 	"password": "123456"
 }
 
@@ -396,3 +396,34 @@ Content-Type: application/json
 DELETE  http://127.0.0.1:5000/auth/delete/user/project-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
+
+
+// Attendance api's
+
+###
+POST  http://127.0.0.1:5000/auth/add/user/attendance
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"email": "rahul@gmail.com",
+	"coordinate": "0",
+	"current_address": "0"
+	
+}
+
+###
+GET  http://127.0.0.1:5000/auth/get/all-users/attendances-list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  http://127.0.0.1:5000/auth/get/user/attendance
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE  http://127.0.0.1:5000/auth/delete/user/attendance/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
