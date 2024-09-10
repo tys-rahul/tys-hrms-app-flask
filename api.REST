@@ -1,4 +1,5 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNTk0MzYxMSwianRpIjoiN2FmMTYwMTQtMjgyYS00NTIzLTljMGMtNGI0MzIxOTU0YjUyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjoyLCJlbWFpbCI6InJhaHVsQGdtYWlsLmNvbSJ9LCJuYmYiOjE3MjU5NDM2MTEsImNzcmYiOiJkNDg4NWU2ZS01ODEyLTQxZTctOTU4Ni1jNTNhYzA0MzE4MzQiLCJleHAiOjE3MjYwMzAwMTF9.6SV2TDEpg-jfJFxrhg2klkZDrNIbUuINqQ91NkCjeo0
+@appUrl = https://tys-hrms-app.onrender.com
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNTk1NjY3MSwianRpIjoiZWI2ZjlhYjctZmVmOS00OWJkLWFkZGMtYWQwODcwYjU5YTg1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjoyLCJlbWFpbCI6InJhaHVsQGdtYWlsLmNvbSJ9LCJuYmYiOjE3MjU5NTY2NzEsImNzcmYiOiI1MWE3OGFjNy01MzNjLTQ1ZWItYTI4Ni0xZmIxNzdmM2RkMmEiLCJleHAiOjE3MjYwNDMwNzF9.YgTbjQjXJJHffsmYzFUtPtVU1bd2xOMA9GWyb-TLQrI
 
 
 
@@ -6,7 +7,7 @@
 
 // Login using below api and copy accss_token from response and pass it to above @token variable to pass dynamic token to all api.
 ###
-POST  http://127.0.0.1:5000/auth/login
+POST  {{appUrl}}/auth/login
 Content-Type: application/json
 
 {
@@ -15,36 +16,135 @@ Content-Type: application/json
 }
 
 ###
-POST  http://127.0.0.1:5000/auth/register
+POST  {{appUrl}}/auth/register
 Content-Type: application/json
 
 {
-	"username": "Shivam",
-	"email": "shivam",
-	"contact_no": "asdfsd",
+	"username": "ajay",
+	"email": "ajay@gmail.com",
+	"contact_no": "9854125478",
 	"password": "123456"
 }
 
-
 ###
-# GET  http://localhost:5134/assign/get
-# Authorization: Bearer {{token}}
-# Content-Type: application/json
-
-###
-GET  http://127.0.0.1:5000/admin/get/users
+GET  {{appUrl}}/admin/get/users
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/users/master-data
+GET {{appUrl}}/auth/user/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+PUT {{appUrl}}/auth/user/edit/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"username": "Sanket Hemade",
+	"email": "sanket@gmail.com",
+	"contact_no": "9854120013"
+}
+
+###
+PUT {{appUrl}}/auth/user/reset-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"email": "sanket@gmail.com",
+	"password": "123456"
+}
+
+###
+PUT {{appUrl}}/admin/update/user-status/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "status": 0
+}
+
+###
+DELETE  {{appUrl}}/admin/delete/user/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  {{appUrl}}/auth/get/users/master-data
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+// Role Management
+
+###
+POST  {{appUrl}}/auth/add/user/role
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"name": "Emp"
+}
+
+###
+POST  {{appUrl}}/auth/add/user/permission
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"name": "Delete"
+}
+
+###
+POST  {{appUrl}}/auth/assign/user/permission/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"permission_ids": "4,5"
+}
+
+###
+POST  {{appUrl}}/auth/assign/user/role
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "role_id": 1
+}
+
+###
+GET  {{appUrl}}/auth/get/user/roles-list
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  {{appUrl}}/auth/get/user/permissions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  {{appUrl}}/auth/get/user/assigned-roles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  {{appUrl}}/auth/get/assigned/user-roles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  {{appUrl}}/auth/get/assigned/user-role/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 // Professionals
 
 ###
-POST  http://127.0.0.1:5000/auth/add/user/professional-details
+POST  {{appUrl}}/auth/add/user/professional-details
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -63,7 +163,7 @@ Content-Type: application/json
 }
 
 ###
-PUT  http://127.0.0.1:5000/auth/update/user/professional-details/1
+PUT  {{appUrl}}/auth/update/user/professional-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -82,17 +182,17 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5000/auth/get/all-users/professional/list
+GET  {{appUrl}}/auth/get/all-users/professional/list
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/user/professional-details/1
+GET  {{appUrl}}/auth/get/user/professional-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-DELETE  http://127.0.0.1:5000/auth/professionals/1
+DELETE  {{appUrl}}/auth/professionals/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -100,7 +200,7 @@ Content-Type: application/json
 // Personals
 
 ###
-POST  http://127.0.0.1:5000/auth/add/user/personal-details
+POST  {{appUrl}}/auth/add/user/personal-details
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -120,7 +220,7 @@ Content-Type: application/json
 }
 
 ###
-PUT  http://127.0.0.1:5000/auth/update/user/personal-details/1
+PUT  {{appUrl}}/auth/update/user/personal-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -140,17 +240,17 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5000/auth/get/all-users/personal/list
+GET  {{appUrl}}/auth/get/all-users/personal/list
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/user/personal-details/1
+GET  {{appUrl}}/auth/get/user/personal-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-DELETE  http://127.0.0.1:5000/auth/delete/user/personal-details/1
+DELETE  {{appUrl}}/auth/delete/user/personal-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -159,7 +259,7 @@ Content-Type: application/json
 // Educations
 
 ###
-POST  http://127.0.0.1:5000/auth/add/user/education-details
+POST  {{appUrl}}/auth/add/user/education-details
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -173,7 +273,7 @@ Content-Type: application/json
 	
 }
 ###
-PUT  http://127.0.0.1:5000/auth/update/user/education-details/1
+PUT  {{appUrl}}/auth/update/user/education-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -188,17 +288,17 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5000/auth/get/all-users/education/list
+GET  {{appUrl}}/auth/get/all-users/education/list
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/user/education-details/1
+GET  {{appUrl}}/auth/get/user/education-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-DELETE  http://127.0.0.1:5000/auth/delete/user/personal-details/3
+DELETE  {{appUrl}}/auth/delete/user/personal-details/3
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -206,7 +306,7 @@ Content-Type: application/json
 // Banks
 
 ###
-POST  http://127.0.0.1:5000/auth/add/user/bank-details
+POST  {{appUrl}}/auth/add/user/bank-details
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -226,7 +326,7 @@ Content-Type: application/json
 }
 
 ###
-PUT  http://127.0.0.1:5000/auth/update/user/bank-details/2
+PUT  {{appUrl}}/auth/update/user/bank-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -246,17 +346,17 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5000/auth/get/all-users/bank/list
+GET  {{appUrl}}/auth/get/all-users/bank/list
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/user/bank-details/2
+GET  {{appUrl}}/auth/get/user/bank-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-DELETE  http://127.0.0.1:5000/auth/delete/user/bank-details/2
+DELETE  {{appUrl}}/auth/delete/user/bank-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -265,7 +365,7 @@ Content-Type: application/json
 // office location api's
 
 ###
-POST  http://127.0.0.1:5000/auth/add/office/location
+POST  {{appUrl}}/auth/add/office/location
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -277,7 +377,7 @@ Content-Type: application/json
 }
 
 ###
-PUT  http://127.0.0.1:5000/auth/update/office/location/1
+PUT  {{appUrl}}/auth/update/office/location/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -289,17 +389,17 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5000/auth/get/all-office-location/list
+GET  {{appUrl}}/auth/get/all-office-location/list
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/office/location/1
+GET  {{appUrl}}/auth/get/office/location/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-DELETE  http://127.0.0.1:5000/auth/delete/office/location/2
+DELETE  {{appUrl}}/auth/delete/office/location/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -307,7 +407,7 @@ Content-Type: application/json
 // family api's
 
 ###
-POST  http://127.0.0.1:5000/auth/add/user/family-details
+POST  {{appUrl}}/auth/add/user/family-details
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -322,7 +422,7 @@ Content-Type: application/json
 }
 
 ###
-PUT  http://127.0.0.1:5000/auth/update/user/family-details/1
+PUT  {{appUrl}}/auth/update/user/family-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -337,17 +437,17 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5000/auth/get/all-users/family/list
+GET  {{appUrl}}/auth/get/all-users/family/list
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/user/family-details/2
+GET  {{appUrl}}/auth/get/user/family-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-DELETE  http://127.0.0.1:5000/auth/delete/user/family-details/2
+DELETE  {{appUrl}}/auth/delete/user/family-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -355,7 +455,7 @@ Content-Type: application/json
 // project api's
 
 ###
-POST  http://127.0.0.1:5000/auth/add/user/project-details
+POST  {{appUrl}}/auth/add/user/project-details
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -369,7 +469,7 @@ Content-Type: application/json
 }
 
 ###
-PUT  http://127.0.0.1:5000/auth/update/user/project-details/1
+PUT  {{appUrl}}/auth/update/user/project-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -383,17 +483,17 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5000/auth/get/all-users/project/list
+GET  {{appUrl}}/auth/get/all-users/project/list
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/user/project-details/1
+GET  {{appUrl}}/auth/get/user/project-details/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-DELETE  http://127.0.0.1:5000/auth/delete/user/project-details/2
+DELETE  {{appUrl}}/auth/delete/user/project-details/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -401,7 +501,7 @@ Content-Type: application/json
 // Attendance api's
 
 ###
-POST  http://127.0.0.1:5000/auth/add/user/attendance
+POST  {{appUrl}}/auth/add/user/attendance
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -413,17 +513,17 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5000/auth/get/all-users/attendances-list
+GET  {{appUrl}}/auth/get/all-users/attendances-list
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  http://127.0.0.1:5000/auth/get/user/attendance
+GET  {{appUrl}}/auth/get/user/attendance
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-DELETE  http://127.0.0.1:5000/auth/delete/user/attendance/1
+DELETE  {{appUrl}}/auth/delete/user/attendance/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
