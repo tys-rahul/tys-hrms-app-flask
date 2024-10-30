@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.models.user import User
+from app.models.role import  Role, UserRoles
 from app.extensions import db
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import re
@@ -104,29 +105,49 @@ def login():
 
     if not email or not password:
         return jsonify({
-                'success': False,
-                'status_code': 400,
-                'data': [],
-                'message': ERROR_MISSING_FIELDS
-            }), 400
+            'success': False,
+            'status_code': 400,
+            'data': [],
+            'message': "Email and password are required."
+        }), 400
 
     user = User.query.filter_by(email=email).first()
     if not user or not user.check_password(password):
         return jsonify({
-                'success': False,
-                'status_code': 401,
-                'data': [],
-                'message': ERROR_INVALID_CREDENTIALS
-            }), 401
+            'success': False,
+            'status_code': 401,
+            'data': [],
+            'message': "Invalid email or password."
+        }), 401
 
-    # access_token = create_access_token(identity=email)
+    # Get the user's roles from the UserRoles table
+    user_role = UserRoles.query.filter_by(user_id=user.id).first()
+    role_name = Role.query.filter_by(id=user_role.role_id).first().name if user_role else "No Role Assigned"
+
+    # Generate access token with user details
     access_token = create_access_token(identity={'user_id': user.id, 'email': user.email})
+
+    # Include user details in the response
+    user_data = {
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'contact_no': user.contact_no,
+        'status': user.status,
+        'role': role_name,  # Add role information here
+    }
+
     return jsonify({
-                'success': True,
-                'status_code': 200,
-                'data': access_token,
-                'message': "Logged in successfully!"
-            }), 200
+        'success': True,
+        'status_code': 200,
+        'data': {
+            'userInfo': user_data,
+            'token': access_token
+        },
+        'message': "Logged in successfully!"
+    }), 200
+
+
 
 @auth_blueprint.route('/user/<int:user_id>', methods=['GET'])
 @jwt_required()
