@@ -6,7 +6,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
     contact_no = db.Column(db.String(10), unique=True, nullable=False)
     status = db.Column(db.String(1), default=0, comment="0 for active, 1 for inactive")
     work_location_type = db.Column(db.String(1), default=0, comment="0 for Office, 1 for Remote")

@@ -1,5 +1,5 @@
 @appUrl = https://tys-hrms-app.onrender.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNTk1NjY3MSwianRpIjoiZWI2ZjlhYjctZmVmOS00OWJkLWFkZGMtYWQwODcwYjU5YTg1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjoyLCJlbWFpbCI6InJhaHVsQGdtYWlsLmNvbSJ9LCJuYmYiOjE3MjU5NTY2NzEsImNzcmYiOiI1MWE3OGFjNy01MzNjLTQ1ZWItYTI4Ni0xZmIxNzdmM2RkMmEiLCJleHAiOjE3MjYwNDMwNzF9.YgTbjQjXJJHffsmYzFUtPtVU1bd2xOMA9GWyb-TLQrI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczMTA1MDcyMiwianRpIjoiZjk4OTQ1MGQtZjY1Zi00NmJlLWJhZDMtNzIyYmE4ODQ1NzM2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjozLCJlbWFpbCI6InNhbmpheUBnbWFpbC5jb20ifSwibmJmIjoxNzMxMDUwNzIyLCJjc3JmIjoiNzFiODNkNjktOTQ5Yy00NzU5LTgxNDMtZWY0MzY4OGYzMzRiIiwiZXhwIjoxNzMxMTM3MTIyfQ.2vNp9e5l1qY9n_iY6c-AHVTWX8PR9cLE-3P_f15f4dg
 
 
 
@@ -11,7 +11,7 @@ POST  {{appUrl}}/auth/login
 Content-Type: application/json
 
 {
-	"email": "rahul@gmail.com",
+	"email": "sanjay@gmail.com",
 	"password": "123456"
 }
 
@@ -265,11 +265,11 @@ Content-Type: application/json
 
 {
 	"university_name": "Mumbai",
-	"course_name": "SSC",
+	"course_name": "SSC 2",
 	"start_date": "10-06-2012",
 	"end_date": "10-06-2013",
 	"grade": "50",
-	"user_id": "2"
+	"user_id": "3"
 	
 }
 ###
@@ -293,7 +293,12 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  {{appUrl}}/auth/get/user/education-details/1
+GET  {{appUrl}}/auth/get/user/education-list/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  {{appUrl}}/auth/get/user/education-details/3
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -506,7 +511,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-	"email": "rahul@gmail.com",
+	"email": "sanjay@gmail.com",
 	"coordinate": "0",
 	"current_address": "0"
 	

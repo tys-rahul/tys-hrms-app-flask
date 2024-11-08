@@ -9,10 +9,9 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import pytz
 
 attendance_blueprint = Blueprint('attendance', __name__)
-timezone = pytz.timezone('Asia/Kolkata')
 
 @attendance_blueprint.route('/add/user/attendance', methods=['POST'])
-@jwt_required()  
+@jwt_required()
 def create_attendance():
     try:
         # Getting authenticated user info
@@ -29,7 +28,7 @@ def create_attendance():
                 'status_code': 404,
                 'message': 'User not found.'
             }), 404
-    
+
         # Check if the user is active (status is 0)
         if int(user.status) != 0:
             return jsonify({
@@ -38,16 +37,17 @@ def create_attendance():
                 'message': 'User is not active. Attendance cannot be created.'
             }), 403
 
-        # Get current date and time
-        curr_date_str = '2024-09-09'  # Example date string
-        curr_date = datetime.strptime(curr_date_str, '%Y-%m-%d').date()
+        # Get current date and time in IST
+        ist_timezone = pytz.timezone("Asia/Kolkata")
+        curr_datetime = datetime.now(ist_timezone)
+        curr_date = curr_datetime.date()
+        curr_time = curr_datetime.time() 
+
         curr_year = curr_date.year
         curr_month = curr_date.strftime('%B')
         curr_day = curr_date.strftime('%A')
-        curr_time = curr_date.strftime('%H:%M:%S')
-
         curr_dateymd = curr_date.strftime('%Y-%m-%d')
-        office_time = '09:30:00'
+        office_time = datetime.strptime('09:30:00', '%H:%M:%S').time()
 
         # Check if attendance already exists for the current day
         existing_attendance = Attendance.query.filter_by(user_id=user_id, attendance_date=curr_dateymd).first()
@@ -64,13 +64,14 @@ def create_attendance():
             # Create new Attendance object
             attendance = Attendance(
                 user_id=user_id,
+                email=email,
                 coordinate=request.json.get('coordinate'),
                 current_address=request.json.get('current_address'),
                 attendance_year=curr_year,
                 attendance_month=curr_month,
                 attendance_date=curr_date,
                 attendance_day=curr_day,
-                in_time=datetime.strptime(curr_time, '%H:%M:%S').time(),  # Ensure it's a time object
+                in_time=curr_time  
             )
 
             # Check if the user is late
@@ -86,22 +87,24 @@ def create_attendance():
             return jsonify({
                 'success': True,
                 'status_code': 201,
-                'data': attendance.to_dict(),  # Use to_dict here
+                'data': attendance.to_dict(),
                 'message': 'Attendance added successfully!'
             }), 201
 
         # If in-time is already set, update out-time and calculate total hours
         elif existing_attendance.in_time is not None:
-            curr_time = datetime.now(timezone).strftime('%H:%M:%S')
+            out_time = curr_datetime.time()  
             in_time = existing_attendance.in_time
-            out_time = datetime.strptime(curr_time, '%H:%M:%S').time()
 
-            total_hours = (datetime.combine(datetime.today(), out_time) - datetime.combine(datetime.today(), in_time)).total_seconds() // 3600
-            total_hours_formatted = str(timedelta(seconds=(datetime.combine(datetime.today(), out_time) - datetime.combine(datetime.today(), in_time)).total_seconds()))
+            # Calculate total seconds worked and convert to hours and minutes
+            total_seconds = (datetime.combine(datetime.today(), out_time) - datetime.combine(datetime.today(), in_time)).total_seconds()
+            hours, remainder = divmod(total_seconds, 3600)
+            minutes, _ = divmod(remainder, 60)
+            total_hours_formatted = f"{int(hours)}:{int(minutes):02}"
 
             # Check the status based on total hours
-            if total_hours >= 5:
-                if in_time < datetime.strptime(office_time, '%H:%M:%S').time():
+            if hours >= 5:
+                if in_time < office_time:
                     status = 'Present'
                 else:
                     status = 'Late'
@@ -118,7 +121,7 @@ def create_attendance():
             return jsonify({
                 'success': True,
                 'status_code': 201,
-                'data': existing_attendance.to_dict(),  # Use to_dict here as well
+                'data': existing_attendance.to_dict(),
                 'message': 'Attendance punched successfully!'
             }), 201
 
@@ -135,9 +138,6 @@ def create_attendance():
             'status_code': 500,
             'message': str(e)
         }), 500
-
-
-
 
 @attendance_blueprint.route('/get/all-users/attendances-list', methods=['GET'])
 @jwt_required()
