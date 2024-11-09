@@ -10,6 +10,10 @@ from app.resources.family import family_blueprint
 from app.resources.office_location import OfficeLocation_blueprint
 from app.resources.project import project_blueprint
 from app.resources.attendance import attendance_blueprint
+from app.resources.experience_details import experience_blueprint
+from app.resources.regularizations import regularization_blueprint
+from app.resources.holidays import holidays_blueprint
+from app.resources.leaves import leaves_blueprint
 
 main_blueprint = Blueprint('main', __name__)
 auth_blueprints = [
@@ -22,7 +26,11 @@ auth_blueprints = [
     family_blueprint,
     OfficeLocation_blueprint,
     project_blueprint,
-    attendance_blueprint
+    attendance_blueprint,
+    experience_blueprint,
+    regularization_blueprint,
+    holidays_blueprint,
+    leaves_blueprint,
 ]
 
 for bp in auth_blueprints:

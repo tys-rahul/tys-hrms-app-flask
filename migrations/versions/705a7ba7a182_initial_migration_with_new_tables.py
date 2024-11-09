@@ -1,8 +1,8 @@
-"""Initial migration
+"""Initial migration with new tables
 
-Revision ID: 08a0cdfd407d
+Revision ID: 705a7ba7a182
 Revises: 
-Create Date: 2024-09-06 13:12:28.571880
+Create Date: 2024-11-09 15:30:42.711333
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '08a0cdfd407d'
+revision = '705a7ba7a182'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -43,7 +43,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=80), nullable=False),
     sa.Column('email', sa.String(length=80), nullable=False),
-    sa.Column('password_hash', sa.String(length=128), nullable=False),
+    sa.Column('password_hash', sa.String(length=255), nullable=False),
     sa.Column('contact_no', sa.String(length=10), nullable=False),
     sa.Column('status', sa.String(length=1), nullable=True, comment='0 for active, 1 for inactive'),
     sa.Column('work_location_type', sa.String(length=1), nullable=True, comment='0 for Office, 1 for Remote'),
@@ -51,6 +51,29 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('contact_no'),
     sa.UniqueConstraint('email')
+    )
+    op.create_table('attendance',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('email', sa.String(length=255), nullable=True),
+    sa.Column('attendance_year', sa.Integer(), nullable=True),
+    sa.Column('attendance_month', sa.String(length=255), nullable=True),
+    sa.Column('attendance_date', sa.Date(), nullable=True),
+    sa.Column('attendance_day', sa.String(length=255), nullable=True),
+    sa.Column('attendance_status', sa.String(length=255), nullable=True),
+    sa.Column('holiday', sa.String(length=255), nullable=True),
+    sa.Column('is_applied', sa.String(length=255), nullable=True),
+    sa.Column('in_time', sa.Time(), nullable=True),
+    sa.Column('out_time', sa.Time(), nullable=True),
+    sa.Column('total_hours', sa.String(length=255), nullable=True),
+    sa.Column('is_late', sa.Boolean(), nullable=True),
+    sa.Column('current_address', sa.String(length=255), nullable=True),
+    sa.Column('coordinate', sa.String(length=255), nullable=True),
+    sa.Column('comments', sa.String(length=255), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('bank',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -81,6 +104,19 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('experience_details',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('company_name', sa.String(length=255), nullable=False),
+    sa.Column('designation', sa.String(length=255), nullable=False),
+    sa.Column('start_date', sa.Date(), nullable=False),
+    sa.Column('end_date', sa.Date(), nullable=True),
+    sa.Column('experience', sa.String(length=255), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('family',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('father_name', sa.String(length=100), nullable=True),
@@ -91,6 +127,23 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('leaves',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('email', sa.String(length=255), nullable=False),
+    sa.Column('start_date', sa.Date(), nullable=True),
+    sa.Column('end_date', sa.Date(), nullable=True),
+    sa.Column('reason', sa.String(length=255), nullable=True),
+    sa.Column('comment', sa.String(length=255), nullable=True),
+    sa.Column('status', sa.String(length=50), nullable=True, comment='Pending/Approved/Rejected'),
+    sa.Column('applied_on', sa.Date(), nullable=True),
+    sa.Column('label', sa.String(length=50), nullable=True),
+    sa.Column('leave_type', sa.String(length=50), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -154,19 +207,39 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('user_id', 'role_id')
     )
+    op.create_table('regularizations',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('att_id', sa.Integer(), nullable=True),
+    sa.Column('email', sa.String(length=255), nullable=True),
+    sa.Column('att_date', sa.Date(), nullable=True),
+    sa.Column('reason', sa.String(length=255), nullable=True),
+    sa.Column('comment', sa.String(length=255), nullable=True),
+    sa.Column('status', sa.String(length=50), nullable=True, comment='Pending/Approved/Rejected'),
+    sa.Column('label', sa.String(length=50), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['att_id'], ['attendance.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_table('regularizations')
     op.drop_table('user_roles')
     op.drop_table('role_permissions')
     op.drop_table('project')
     op.drop_table('professional')
     op.drop_table('personal')
+    op.drop_table('leaves')
     op.drop_table('family')
+    op.drop_table('experience_details')
     op.drop_table('education')
     op.drop_table('bank')
+    op.drop_table('attendance')
     op.drop_table('user')
     op.drop_table('role')
     op.drop_table('permission')

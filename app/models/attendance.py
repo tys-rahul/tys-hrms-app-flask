@@ -25,3 +25,5 @@ class Attendance(db.Model):
     # user = db.relationship('User', back_populates='attendances')
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        
+    regularizations = db.relationship('Regularization', back_populates='attendance')
