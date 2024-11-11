@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, Blueprint
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func , desc
 from app.models.attendance import Attendance
 from app.models.user import User
 from app.extensions import db
@@ -142,47 +142,23 @@ def create_attendance():
 @attendance_blueprint.route('/get/all-users/attendances-list', methods=['GET'])
 @jwt_required()
 def get_all_attendances():
-    current_user_id = get_jwt_identity()
-
-    # Check if the current user is an admin
-    # if not is_admin(current_user_id):
-    #     return jsonify({
-    #         'success': False,
-    #         'status_code': 403,
-    #         'message': 'Admin access required.'
-    #     }), 403
-
-    # try:
-    attendances = Attendance.query.all()
-    all_attendances = [attendance.to_dict() for attendance in attendances]
-
-    return jsonify({
-        'success': True,
-        'status_code': 200,
-        'data': all_attendances,
-    }), 200
-
-    # except Exception as e:
-    #     return jsonify({
-    #         'success': False,
-    #         'status_code': 500,
-    #         'message': str(e)
-    #     }), 500
-
-
-@attendance_blueprint.route('/get/user/attendance', methods=['GET'])
-@jwt_required()
-def get_user_attendances():
-    current_user_id = get_jwt_identity()
+    month = request.args.get('month', type=str)  
+    year = request.args.get('year', type=int)    
 
     try:
-        attendances = Attendance.query.filter_by(user_id=current_user_id).all()
-        user_attendances = [attendance.to_dict() for attendance in attendances]
+        attendances = Attendance.query.filter_by(attendance_year=year, attendance_month=month).order_by(desc(Attendance.attendance_date)).all()
+
+        all_user_attendances = [attendance.to_dict() for attendance in attendances]
+
+        for attendance in all_user_attendances:
+            attendance['attendance_month'] = str(attendance['attendance_month'])
+            attendance['attendance_year'] = str(attendance['attendance_year'])
 
         return jsonify({
             'success': True,
             'status_code': 200,
-            'data': user_attendances,
+            'data': all_user_attendances,
+            'message': 'All User Attendances fetched successfully!!'
         }), 200
 
     except Exception as e:
@@ -192,6 +168,57 @@ def get_user_attendances():
             'message': str(e)
         }), 500
 
+@attendance_blueprint.route('/get/user/attendance/<int:user_id>', methods=['GET'])
+@jwt_required()
+def get_user_attendances(user_id):
+    month = request.args.get('month', type=str)  
+    year = request.args.get('year', type=int)    
+
+    try:
+        attendances = Attendance.query.filter_by(user_id=user_id, attendance_year=year, attendance_month=month).order_by(desc(Attendance.attendance_date)).all()
+
+        user_attendances = [attendance.to_dict() for attendance in attendances]
+
+        for attendance in user_attendances:
+            attendance['attendance_month'] = str(attendance['attendance_month'])
+            attendance['attendance_year'] = str(attendance['attendance_year'])
+
+        return jsonify({
+            'success': True,
+            'status_code': 200,
+            'data': user_attendances,
+            'message': 'User Attendances fetched successfully!!'
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'status_code': 500,
+            'message': str(e)
+        }), 500
+
+@attendance_blueprint.route('/get/user/todays-attendance', methods=['GET'])
+@jwt_required()
+def user_current_attendance():
+    current_user_id = get_jwt_identity().get('user_id')  
+    
+    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    get_attendance = Attendance.query.filter_by(user_id=current_user_id, attendance_date=current_date).all()
+
+    if not get_attendance:
+        message = 'User Attendance is not yet created!!'
+    else:
+        message = 'User Attendance fetched successfully!!'
+
+    response = {
+        'success': True,
+        'status_code': 200,
+        'data': [attendance.to_dict() for attendance in get_attendance],  
+        'message': message
+    }
+
+    return jsonify(response), 200
 
 @attendance_blueprint.route('/delete/user/attendance/<int:id>', methods=['DELETE'])
 @jwt_required()

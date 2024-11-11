@@ -1,5 +1,5 @@
 @appUrl = https://tys-hrms-app.onrender.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczMTA1MDcyMiwianRpIjoiZjk4OTQ1MGQtZjY1Zi00NmJlLWJhZDMtNzIyYmE4ODQ1NzM2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjozLCJlbWFpbCI6InNhbmpheUBnbWFpbC5jb20ifSwibmJmIjoxNzMxMDUwNzIyLCJjc3JmIjoiNzFiODNkNjktOTQ5Yy00NzU5LTgxNDMtZWY0MzY4OGYzMzRiIiwiZXhwIjoxNzMxMTM3MTIyfQ.2vNp9e5l1qY9n_iY6c-AHVTWX8PR9cLE-3P_f15f4dg
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczMTMxMDgwOSwianRpIjoiNWFlYzczZjItMDA1Yy00MmE2LWE3ZmYtNmY2OTA5ZWI0OWZmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjozLCJlbWFpbCI6InNhbmpheUBnbWFpbC5jb20ifSwibmJmIjoxNzMxMzEwODA5LCJjc3JmIjoiNGI5ODhhNGQtZmYzOS00ZjQxLWI4ZWYtZmE4OWRhOWYxMjNhIiwiZXhwIjoxNzMxMzk3MjA5fQ.XV3dETd3n6v_2gUYtBJuxCQs16YE2RpKGUJb9cteamE
 
 
 
@@ -518,12 +518,19 @@ Content-Type: application/json
 }
 
 ###
-GET  {{appUrl}}/auth/get/all-users/attendances-list
+GET  {{appUrl}}/auth/get/all-users/attendances-list?month=November&year=2024
+
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET  {{appUrl}}/auth/get/user/attendance
+GET  {{appUrl}}/auth/get/user/todays-attendance
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET  {{appUrl}}/auth/get/user/attendance/3?month=November&year=2024
+
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
