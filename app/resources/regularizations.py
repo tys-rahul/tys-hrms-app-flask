@@ -44,6 +44,15 @@ def create_regularization():
         # Parse att_date
         att_date = datetime.strptime(att_date_str, '%Y-%m-%d').date() if att_date_str else None
 
+        # Check if a regularization request for the same user and att_date already exists
+        existing_regularization = Regularization.query.filter_by(user_id=user_id, att_date=att_date).first()
+        if existing_regularization:
+            return jsonify({
+                'success': False,
+                'status_code': 400,
+                'message': "A regularization request already exists for this user and date."
+            }), 400
+
         new_regularization = Regularization(
             user_id=user_id,
             att_id=att_id,
@@ -71,7 +80,6 @@ def create_regularization():
             'status_code': 400,
             'message': str(e)
         }), 400
-
 @regularization_blueprint.route('/get/user/regularization/<int:id>', methods=['GET'])
 @jwt_required()
 def get_regularization(id):

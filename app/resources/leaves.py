@@ -11,14 +11,35 @@ leaves_blueprint = Blueprint('leaves', __name__)
 def create_leave():
     data = request.json
     try:
+        user_id = data['user_id']
+        start_date = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
         end_date = data.get('end_date')
         leave_type = "AL" if not end_date else "FL"
-        
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date() if end_date else None
+
+        # Check 1: Check if a leave request with the same user_id and start_date already exists
+        existing_leave_same_start = Leave.query.filter_by(user_id=user_id, start_date=start_date).first()
+        if existing_leave_same_start:
+            return jsonify({
+                'success': False,
+                'status_code': 400,
+                'message': "A leave request already exists for this user with the same Attendance date."
+            }), 400
+
+        # Check 2: Check if a leave request with the same user_id, start_date, and end_date already exists
+        existing_leave_same_start_end = Leave.query.filter_by(user_id=user_id, start_date=start_date, end_date=end_date).first()
+        if existing_leave_same_start_end:
+            return jsonify({
+                'success': False,
+                'status_code': 400,
+                'message': "A leave request already exists for this user with the same start and end date."
+            }), 400
+
         new_leave = Leave(
-            user_id=data['user_id'],
+            user_id=user_id,
             email=data['email'],
-            start_date=datetime.strptime(data['start_date'], '%Y-%m-%d').date(),
-            end_date=datetime.strptime(end_date, '%Y-%m-%d').date() if end_date else None,
+            start_date=start_date,
+            end_date=end_date,
             reason=data.get('reason', 'NA'),
             comment=data.get('comment', 'NA'),
             status=data.get('status', 'Pending'),
@@ -44,7 +65,8 @@ def create_leave():
             'error': str(e),
             'message': "An error occurred while creating the leave request."
         }), 400
-
+   
+        
 @leaves_blueprint.route('/get/user/leave/request/<int:id>', methods=['GET'])
 @jwt_required()
 def get_leave(id):

@@ -259,7 +259,108 @@ def delete_attendance(id):
     #         'message': str(e)
     #     }), 500
 
+# Create attendance record
+@attendance_blueprint.route('/admin/add/attendance', methods=['POST'])
+def add_attendance():
+    data = request.get_json()
+    
+    # Check if a record already exists with the same user_id and attendance_date
+    existing_record = Attendance.query.filter_by(
+        user_id=data.get('user_id'),
+        attendance_date=datetime.strptime(data['attendance_date'], '%Y-%m-%d')
+    ).first()
+    
+    if existing_record:
+        return jsonify({
+            'success': False,
+            'status_code': 400,
+            'message': 'Attendance record already exists for this user and date.'
+        }), 400
 
+    try:
+        attendance = Attendance(
+            user_id=data.get('user_id'),
+            email=data.get('email'),
+            attendance_year=data.get('attendance_year'),
+            attendance_month=data.get('attendance_month'),
+            attendance_date=datetime.strptime(data['attendance_date'], '%Y-%m-%d') if data.get('attendance_date') else None,
+            attendance_day=data.get('attendance_day'),
+            attendance_status=data.get('attendance_status'),
+            holiday=data.get('holiday'),
+            is_applied=data.get('is_applied'),
+            in_time=datetime.strptime(data['in_time'], '%H:%M:%S') if data.get('in_time') else None,
+            out_time=datetime.strptime(data['out_time'], '%H:%M:%S') if data.get('out_time') else None,
+            total_hours=data.get('total_hours'),
+            is_late=data.get('is_late'),
+            current_address=data.get('current_address'),
+            coordinate=data.get('coordinate'),
+            comments=data.get('comments'),
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+        db.session.add(attendance)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'status_code': 201,
+            'data': attendance.to_dict(),
+            'message': 'Attendance record added successfully!'
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'status_code': 400,
+            'message': str(e)
+        }), 400
+# Edit attendance record
+@attendance_blueprint.route('/admin/edit/attendance/<int:id>', methods=['PUT'])
+def edit_attendance(id):
+    data = request.get_json()
+    attendance = Attendance.query.get(id)
+    
+    if not attendance:
+        return jsonify({
+                'success': False,
+                'status_code': 404,
+                'message': 'Attendance record not found.'
+            }), 404
+
+    try:
+        attendance.user_id = data.get('user_id', attendance.user_id)
+        attendance.email = data.get('email', attendance.email)
+        attendance.attendance_year = data.get('attendance_year', attendance.attendance_year)
+        attendance.attendance_month = data.get('attendance_month', attendance.attendance_month)
+        attendance.attendance_date = datetime.strptime(data['attendance_date'], '%Y-%m-%d') if data.get('attendance_date') else attendance.attendance_date
+        attendance.attendance_day = data.get('attendance_day', attendance.attendance_day)
+        attendance.attendance_status = data.get('attendance_status', attendance.attendance_status)
+        attendance.holiday = data.get('holiday', attendance.holiday)
+        attendance.is_applied = data.get('is_applied', attendance.is_applied)
+        attendance.in_time = datetime.strptime(data['in_time'], '%H:%M:%S') if data.get('in_time') else attendance.in_time
+        attendance.out_time = datetime.strptime(data['out_time'], '%H:%M:%S') if data.get('out_time') else attendance.out_time
+        attendance.total_hours = data.get('total_hours', attendance.total_hours)
+        attendance.is_late = data.get('is_late', attendance.is_late)
+        attendance.current_address = data.get('current_address', attendance.current_address)
+        attendance.coordinate = data.get('coordinate', attendance.coordinate)
+        attendance.comments = data.get('comments', attendance.comments)
+        attendance.updated_at = datetime.now()
+
+        db.session.commit()
+        return jsonify({
+                'success': True,
+                'status_code': 200,
+                'data': attendance.to_dict(),
+                'message': 'Attendance record updated successfully!'
+            }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'status_code': 400,
+            'message': str(e)
+        }), 400
 
 def to_dict(self):
     return {

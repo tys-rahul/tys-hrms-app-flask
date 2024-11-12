@@ -14,6 +14,8 @@ from app.resources.experience_details import experience_blueprint
 from app.resources.regularizations import regularization_blueprint
 from app.resources.holidays import holidays_blueprint
 from app.resources.leaves import leaves_blueprint
+from app.resources.reimbursement import reimbursement_blueprint
+from app.resources.notification import notification_blueprint
 
 main_blueprint = Blueprint('main', __name__)
 auth_blueprints = [
@@ -31,6 +33,8 @@ auth_blueprints = [
     regularization_blueprint,
     holidays_blueprint,
     leaves_blueprint,
+    reimbursement_blueprint,
+    notification_blueprint,
 ]
 
 for bp in auth_blueprints:
