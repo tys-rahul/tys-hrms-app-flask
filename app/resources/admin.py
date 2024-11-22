@@ -66,7 +66,7 @@ def get_all_users():
     return jsonify({
                 'success': True,
                 'status_code': 200,
-                'data': [{"id": user.id, 'username': user.username, "email": user.email, "contact_no": user.contact_no, "status": user.status} for user in users],
+                'data': [{"id": user.id, 'username': user.username, "email": user.email, "contact_no": user.contact_no, "status": user.status, "user_type": user.user_type, "work_location_type": user.work_location_type} for user in users],
                 'message': "Data fetched successfully!"
             }), 200
 

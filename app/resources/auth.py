@@ -134,6 +134,8 @@ def login():
         'email': user.email,
         'contact_no': user.contact_no,
         'status': user.status,
+        'user_type': user.user_type,
+        'work_location_type': user.work_location_type,
         'role': role_name,  # Add role information here
     }
 
@@ -155,7 +157,7 @@ def get_user_by_id(user_id):
     user = User.query.get(user_id)
     if not user:
         return jsonify({"response": ERROR_USER_NOT_FOUND}), 404
-    return jsonify({"id": user.id, 'username': user.username, "email": user.email, "contact_no": user.contact_no}), 200
+    return jsonify({"id": user.id, 'username': user.username, "email": user.email, "contact_no": user.contact_no,"user_type":user.user_type, "work_location_type":user.work_location_type, "status":user.status}), 200
 
 @auth_blueprint.route('/user/edit/<int:user_id>', methods=['PUT'])
 @jwt_required()
@@ -164,6 +166,8 @@ def edit_user(user_id):
     email = data.get('email')
     username = data.get('username')
     contact_no = data.get('contact_no')
+    user_type = data.get('user_type')
+    work_location_type = data.get('work_location_type')
 
     if not username or not email or not contact_no:
         return jsonify({
@@ -219,6 +223,8 @@ def edit_user(user_id):
     user.email = email
     user.username = username
     user.contact_no = contact_no
+    user.user_type = user_type
+    user.work_location_type = work_location_type
 
     db.session.commit()
     return jsonify({

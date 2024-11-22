@@ -22,13 +22,43 @@ def get_projects():
 @project_blueprint.route('/get/user/project-details/<int:id>', methods=['GET'])
 @jwt_required()
 def get_project(id):
-    project = Project.query.get_or_404(id)
+    project = Project.query.get(id)
+    if not project:
+        return jsonify({
+            'success': False,
+            'status_code': 404,
+            'data': [],
+            'message': "No project found with the given ID."
+        }), 404
+
     return jsonify({
-                'success': True,
-                'status_code': 200,
-                'data': [project.to_dict()],
-                'message': "Data fetched successfully!"
-            }), 200
+        'success': True,
+        'status_code': 200,
+        'data': [project.to_dict()],
+        'message': "Data fetched successfully!"
+    }), 200
+    
+# Get Projects by User ID
+@project_blueprint.route('/get/user/project/list/<int:user_id>', methods=['GET'])
+@jwt_required()
+def get_project_by_userId(user_id):
+    projects = Project.query.filter_by(user_id=user_id).all()
+    
+    if not projects:
+        return jsonify({
+            'success': False,
+            'status_code': 404,
+            'data': [],
+            'message': "No projects found for the given user ID."
+        }), 404
+
+    return jsonify({
+        'success': True,
+        'status_code': 200,
+        'data': [project.to_dict() for project in projects],
+        'message': "Data fetched successfully!"
+    }), 200
+
 
 # Create Project
 @project_blueprint.route('/add/user/project-details', methods=['POST'])
@@ -79,6 +109,7 @@ def delete_project(id):
 def to_dict(self):
         return {
             'id': self.id,
+            'user_id': self.user_id,
             'title': self.title,
             'description': self.description,
             'start_date': self.start_date,
