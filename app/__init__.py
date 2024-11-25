@@ -13,7 +13,7 @@ def create_app():
         return jsonify({"message": "Flask API is running!"})
 
     # Allow CORS requests from your frontend origin
-    CORS(app, origins="http://localhost:3000")
+    CORS(app, origins=["http://localhost:3000", "https://demo.tysindia.com"])
 
     db.init_app(app)
     jwt.init_app(app)
