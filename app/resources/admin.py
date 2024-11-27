@@ -13,6 +13,7 @@ from app.models.professional import Professional
 from app.models.personal import Personal
 from app.models.holidays import Holidays
 import calendar
+from dateutil import parser
 from sqlalchemy.exc import SQLAlchemyError
 
 admin_blueprint = Blueprint('admin', __name__)
@@ -96,6 +97,7 @@ def delete_user(user_id):
 
 
 @admin_blueprint.route('/get/attendance/monthly/overview', methods=['GET'])
+@jwt_required()
 def attendance_details():
     try:
         user_counts = []
@@ -227,6 +229,7 @@ def attendance_details():
         }), 500
         
 @admin_blueprint.route('/update/regularization/status', methods=['PUT'])
+@jwt_required()
 def approve_or_reject_regularization():
     try:
         data = request.get_json()
@@ -298,6 +301,7 @@ def approve_or_reject_regularization():
         }), 500
         
 @admin_blueprint.route('/update/leave/status', methods=['PUT'])
+@jwt_required()
 def leave_status_approval():
     data = request.get_json()
     leave_id = data.get('leave_id')
@@ -398,6 +402,7 @@ def leave_status_approval():
         }), 200
 
 @admin_blueprint.route('/update/reimbursement/status', methods=['PUT'])
+@jwt_required()
 def update_reimbursement_status():
     data = request.get_json()
 
@@ -446,4 +451,116 @@ def update_reimbursement_status():
             'ref_no': reimbursement.ref_no
         },
         'message': "Reimbursement status updated successfully!"
+    }), 200
+    
+@admin_blueprint.route('/get/attendance/monthly/report', methods=['GET'])
+@jwt_required()
+def view_user_attendance_monthly_details():
+    user_id = request.args.get('user_id')
+    year = request.args.get('year')
+    month_name = request.args.get('month')
+
+    # Validate input
+    if not user_id or not year or not month_name:
+        return jsonify({
+            'success': False,
+            'status_code': 400,
+            'data': None,
+            'message': 'Missing required parameters.'
+        }), 400
+
+    try:
+        # Convert month name to a numeric month
+        month = datetime.strptime(month_name, "%B").month
+    except ValueError:
+        return jsonify({
+            'success': False,
+            'status_code': 400,
+            'data': None,
+            'message': 'Invalid month name.'
+        }), 400
+
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({
+            'success': False,
+            'status_code': 404,
+            'data': None,
+            'message': 'User not found.'
+        }), 404
+
+    professional = Professional.query.filter_by(user_id=user_id).first()
+    designation = professional.designation if professional else "NA"
+    joining_date = parser.parse(professional.joining_date) if professional and professional.joining_date else None
+    is_verified = joining_date <= datetime.now() - timedelta(days=180) if joining_date else False
+
+    attendance_records = Attendance.query.filter_by(
+        user_id=user_id, attendance_year=year, attendance_month=month_name
+    ).order_by(Attendance.id.desc()).all()
+
+    total_seconds = 0
+    for record in attendance_records:
+        time_parts = record.total_hours.replace("hr", "").replace("min", "").strip().split(":")
+        if len(time_parts) == 2:
+            hours, minutes = map(int, time_parts)
+            total_seconds += hours * 3600 + minutes * 60
+
+    hours_worked = total_seconds // 3600
+    minutes_worked = (total_seconds % 3600) // 60
+    worked_in_month = f"{hours_worked}:{minutes_worked:02d}"
+
+    start_date = datetime(int(year), month, 1)
+    end_date = (start_date + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+    total_days = (end_date - start_date).days + 1
+
+    working_days = [
+        start_date + timedelta(days=i) for i in range(total_days)
+        if (start_date + timedelta(days=i)).weekday() < 5
+    ]
+    holidays_count = Holidays.query.filter_by(year=int(year), month=month_name).count()
+    total_working_days = len(working_days) - holidays_count
+
+    present_count = Attendance.query.filter_by(
+        user_id=user_id, attendance_year=year, attendance_month=month_name, attendance_status='Present'
+    ).count()
+    late_count = Attendance.query.filter_by(
+        user_id=user_id, attendance_year=year, attendance_month=month_name, attendance_status='Late'
+    ).count()
+    halfday_count = Attendance.query.filter_by(
+        user_id=user_id, attendance_year=year, attendance_month=month_name, attendance_status='Halfday'
+    ).count()
+    absent_count = Attendance.query.filter_by(
+        user_id=user_id, attendance_year=year, attendance_month=month_name, attendance_status='Absent'
+    ).count()
+    leave_count = Attendance.query.filter_by(
+        user_id=user_id, attendance_year=year, attendance_month=month_name, attendance_status='Leave'
+    ).count()
+
+    profile_src = Personal.query.filter_by(user_id=user_id).first()
+    src = profile_src.src if profile_src else "NA"
+
+    response = {
+        "user": {"id": user.id, "email": user.email},
+        "designation": designation,
+        "isVerified": is_verified,
+        "year": year,
+        "month": month_name,
+        "workedInMonth": worked_in_month,
+        "totalWorkingDays": total_working_days,
+        "attendance": {
+            "presentCount": present_count,
+            "lateCount": late_count,
+            "halfdayCount": halfday_count,
+            "absentCount": absent_count,
+            "leaveCount": leave_count,
+        },
+        "leaveBalance": "NA",  # Replace with actual logic.
+        "profileSrc": src,
+    }
+
+    return jsonify({
+        'success': True,
+        'status_code': 200,
+        'data': response,
+        'message': 'Monthly attendance report fetched successfully!'
     }), 200

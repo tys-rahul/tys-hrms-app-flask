@@ -261,6 +261,7 @@ def delete_attendance(id):
 
 # Create attendance record
 @attendance_blueprint.route('/admin/add/attendance', methods=['POST'])
+@jwt_required()
 def add_attendance():
     data = request.get_json()
     
@@ -317,6 +318,7 @@ def add_attendance():
         }), 400
 # Edit attendance record
 @attendance_blueprint.route('/admin/edit/attendance/<int:id>', methods=['PUT'])
+@jwt_required()
 def edit_attendance(id):
     data = request.get_json()
     attendance = Attendance.query.get(id)
