@@ -197,6 +197,7 @@ def attendance_details():
                 "leaveCount": attendance_counts["Leave"],
                 "fullName": f"{user.username}",
                 "email": user.email,
+                "id": user.id,
                 "pic": user_profile_pic.src if user_profile_pic else "default.jpg",
                 "pro": {
                     "designation": professional.designation if professional else "N/A",
