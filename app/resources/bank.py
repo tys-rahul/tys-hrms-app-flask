@@ -16,16 +16,27 @@ def get_banks():
                 'message': "Data fetched successfully!"
             }), 200
 
-@bank_blueprint.route('/get/user/bank-details/<int:id>', methods=['GET'])
+@bank_blueprint.route('/get/user/bank-details/<int:user_id>', methods=['GET'])
 @jwt_required()
-def get_bank(id):
-    bank = Bank.query.get_or_404(id)
+def get_bank(user_id):
+    bank_details = Bank.query.filter_by(user_id=user_id).all()
+
+    if not bank_details:
+        return jsonify({
+            'success': False,
+            'status_code': 404,
+            'data': [],
+            'message': "No bank details found for the given user ID."
+        }), 404
+
+    data = [bank.to_dict() for bank in bank_details]
+
     return jsonify({
-                'success': True,
-                'status_code': 200,
-                'data': [bank.to_dict()],
-                'message': "Data fetched successfully!"
-            }), 200
+        'success': True,
+        'status_code': 200,
+        'data': data,
+        'message': "Data fetched successfully!"
+    }), 200
 
 @bank_blueprint.route('/add/user/bank-details', methods=['POST'])
 @jwt_required()

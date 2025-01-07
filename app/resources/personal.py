@@ -17,16 +17,24 @@ def get_personals():
                 'message': "Data fetched successfully!"
             }), 200
 
-@personal_blueprint.route('/get/user/personal-details/<int:id>', methods=['GET'])
+@personal_blueprint.route('/get/user/personal-details/<int:user_id>', methods=['GET'])
 @jwt_required()
-def get_personal(id):
-    personal = Personal.query.get_or_404(id)
+def get_personal(user_id):
+    personal = Personal.query.filter_by(user_id=user_id).first()
+    
+    if not personal:
+        return jsonify({
+            'success': False,
+            'status_code': 404,
+            'message': "No personal details found for the given user ID."
+        }), 404
+
     return jsonify({
-                'success': True,
-                'status_code': 200,
-                'data': [personal.to_dict()],
-                'message': "Data fetched successfully!"
-            }), 200
+        'success': True,
+        'status_code': 200,
+        'data': [personal.to_dict()],
+        'message': "Data fetched successfully!"
+    }), 200
 
 @personal_blueprint.route('/add/user/personal-details', methods=['POST'])
 @jwt_required()
@@ -64,6 +72,7 @@ def update_personal(id):
                 'data': [personal.to_dict()],
                 'message': "Data updated successfully!"
             }), 200
+    
 @personal_blueprint.route('/delete/user/personal-details/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_personal(id):

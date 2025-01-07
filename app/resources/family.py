@@ -26,23 +26,27 @@ def get_all_families():
             }), 200
 
 # Get family details by family ID
-@family_blueprint.route('/get/user/family-details/<int:id>', methods=['GET'])
+@family_blueprint.route('/get/user/family-details/<int:user_id>', methods=['GET'])
 @jwt_required()
-def get_family(id):
-    family = Family.query.get(id)
-    if not family:
+def get_family(user_id):
+    family_details = Family.query.filter_by(user_id=user_id).all()
+
+    if not family_details:
         return jsonify({
-                'success': False,
-                'status_code': 404,
-                'data': [],
-                'message': "Family not found"
-            }), 404
+            'success': False,
+            'status_code': 404,
+            'data': [],
+            'message': "No family details found for the given user ID."
+        }), 404
+
+    data = [family.to_dict() for family in family_details]
+
     return jsonify({
-                'success': True,
-                'status_code': 200,
-                'data': [family.to_dict()],
-                'message': "Data fetched successfully!"
-            }), 200
+        'success': True,
+        'status_code': 200,
+        'data': data,
+        'message': "Data fetched successfully!"
+    }), 200
 
 # Create a new family entry
 @family_blueprint.route('/add/user/family-details', methods=['POST'])

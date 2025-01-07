@@ -16,16 +16,24 @@ def get_professionals():
                 'message': "Data fetched successfully!"
             }), 200
 
-@professional_blueprint.route('/get/user/professional-details/<int:id>', methods=['GET'])
+@professional_blueprint.route('/get/user/professional-details/<int:user_id>', methods=['GET'])
 @jwt_required()
-def get_professional(id):
-    professional = Professional.query.get_or_404(id)
+def get_professional(user_id):
+    professional = Professional.query.filter_by(user_id=user_id).first()
+    
+    if not professional:
+        return jsonify({
+            'success': False,
+            'status_code': 404,
+            'message': "No professional details found for the given user ID."
+        }), 404
+
     return jsonify({
-                'success': True,
-                'status_code': 200,
-                'data': [professional.to_dict()],
-                'message': "Data fetched successfully!"
-            }), 200
+        'success': True,
+        'status_code': 200,
+        'data': [professional.to_dict()], 
+        'message': "Data fetched successfully!"
+    }), 200
 
 @professional_blueprint.route('/add/user/professional-details', methods=['POST'])
 @jwt_required()
